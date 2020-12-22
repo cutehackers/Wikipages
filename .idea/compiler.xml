@@ -4,6 +4,8 @@
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8" />
+    <bytecodeTargetLevel target="1.7">
+      <module name="Wikipages.app" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

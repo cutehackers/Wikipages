@@ -29,7 +29,7 @@ import android.view.MenuItem
  *  • Response Data를 어떤 형식의 타입으로도 요청할 수 있어야 한다.
  *  • Request Body 전달 시 어떤 형식으로든 서버에 전달, 요청할 수 있어야 한다.
  *  • API 접속 timeout 시간을 설정할 수 있도록 작성한다.
- *  • jar로 패키징될 수 있도록 gradle 빌드 스크립트도 작성한다.
+ *  • jar로 패키징될 수 있도록 gradle 빌드 스크립트도 작성한다. (O)
  *  • 위의 요구 사항에 대해서 테스트 케이스를 작성한다.
  *
  * [2 단계]
