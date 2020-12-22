@@ -20,6 +20,9 @@ import java.util.concurrent.TimeUnit
  */
 class HttpClient internal constructor(builder: Builder) : HttpTask.Factory {
 
+  @get:JvmName("connectTimeoutMillis")
+  val connectTimeoutMillis = builder.connectTimeout
+
   @get:JvmName("readTimeoutMillis")
   val readTimeoutMillis = builder.readTimeout
 
@@ -38,8 +41,13 @@ class HttpClient internal constructor(builder: Builder) : HttpTask.Factory {
   // inner class: Builder
 
   class Builder {
-    internal var readTimeout = 10 * 1000  // 10 seconds
-    internal var writeTimeout = 10 * 1000 // 10 seconds
+    internal var connectTimeout = 10 * 1000 // 10 seconds
+    internal var readTimeout = 10 * 1000    // 10 seconds
+    internal var writeTimeout = 10 * 1000   // 10 seconds
+
+    fun connectTimeout(timeout: Long, unit: TimeUnit) = apply {
+      connectTimeout = getDuration(timeout, unit)
+    }
 
     fun readTimeout(timeout: Long, unit: TimeUnit) = apply {
       readTimeout = getDuration(timeout, unit)
