@@ -1,5 +1,6 @@
 package app.junhyounglee.libcore.net
 
+import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
@@ -20,6 +21,7 @@ class HttpRequest internal constructor(
     val headers: Map<String, String>
 ) {
 
+  @Throws(IOException::class)
   fun open(): HttpURLConnection {
     val connection = url.openConnection() as HttpURLConnection
     return connection.apply {
@@ -68,7 +70,7 @@ class HttpRequest internal constructor(
       method(HttpMethod.DELETE)
     }
 
-    fun method(method: HttpMethod) = apply {
+    private fun method(method: HttpMethod) = apply {
       this.method = method
     }
 
