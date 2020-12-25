@@ -10,7 +10,11 @@ import java.util.concurrent.TimeUnit
  *   val client = HttpClient()
  *
  * 2) HTTP 요청 생성 후 실행
- *   val request = HttpRequest()
+ *   val request = HttpRequest.builder()
+ *     .get()
+ *     .url(URL("http://www.google.com"))
+ *     .build()
+ *
  *   try (val response: HttpResponse = request.client(client).execute()) {
  *    ...
  *   }
@@ -63,6 +67,8 @@ class HttpClient internal constructor(builder: Builder) : HttpTask.Factory {
       require(millis != 0L || timeout <= 0L) { "too small." }
       return millis.toInt()
     }
+
+    fun build(): HttpClient = HttpClient(this)
   }
 
 
@@ -70,13 +76,4 @@ class HttpClient internal constructor(builder: Builder) : HttpTask.Factory {
     @JvmStatic
     fun builder() = Builder()
   }
-}
-
-
-class HttpRequest {
-
-}
-
-class HttpResponse {
-
 }
