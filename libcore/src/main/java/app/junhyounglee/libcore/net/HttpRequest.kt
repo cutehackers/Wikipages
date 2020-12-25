@@ -63,7 +63,7 @@ class HttpRequest internal constructor(
     }
 
     fun put() = apply {
-      method(HttpMethod.GET)
+      method(HttpMethod.PUT)
     }
 
     fun delete() = apply {
