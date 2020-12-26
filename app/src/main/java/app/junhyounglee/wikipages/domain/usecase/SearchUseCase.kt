@@ -25,15 +25,7 @@ class SearchUseCase(
       getSearchSummary(query).zip(getSearchPages(query)) { summary: WikiSummary, pages: List<WikiPage> ->
         Result.Success(WikiContents(query, summary, pages))
       }
-
-//      getSearchSummary(query).combine(getSearchPages(query), ::transform)
-//          .onStart {
-//            emit(Result.Loading)
-//          }
     }
   }
 
-//  private fun transform(summary: WikiSummary, pages: List<WikiPage>): Result<WikiContents> {
-//    return Result.Success(WikiContents(summary, pages))
-//  }
 }
