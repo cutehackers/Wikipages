@@ -26,7 +26,7 @@ object ServiceLocator {
       .baseUrl(context.getString(R.string.wikipedia_base_url))
       .build()
 
-  fun provideHttpClient() = HttpClient()
+  fun provideHttpClient() = HttpClient.builder().build()
 
   fun provideSearchUseCase(wikiDataSource: WikiDataSource) =
       SearchUseCase(Dispatchers.IO, wikiDataSource)
