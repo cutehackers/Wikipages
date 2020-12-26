@@ -17,18 +17,23 @@ class SearchUseCase(
     dispatcher: CoroutineDispatcher,
     private val repository: WikiDataSource
 ) : FlowUseCase<SearchParameter, WikiContents>(dispatcher) {
+
   override fun execute(parameters: SearchParameter): Flow<Result<WikiContents>> {
     val query = parameters.query
 
     return repository.run {
-      getSearchSummary(query).combine(getSearchPages(query), ::transform)
-          .onStart {
-            emit(Result.Loading)
-          }
+      getSearchSummary(query).zip(getSearchPages(query)) { summary: WikiSummary, pages: List<WikiPage> ->
+        Result.Success(WikiContents(query, summary, pages))
+      }
+
+//      getSearchSummary(query).combine(getSearchPages(query), ::transform)
+//          .onStart {
+//            emit(Result.Loading)
+//          }
     }
   }
 
-  private fun transform(summary: WikiSummary, pages: List<WikiPage>): Result<WikiContents> {
-    return Result.Success(WikiContents(summary, pages))
-  }
+//  private fun transform(summary: WikiSummary, pages: List<WikiPage>): Result<WikiContents> {
+//    return Result.Success(WikiContents(summary, pages))
+//  }
 }

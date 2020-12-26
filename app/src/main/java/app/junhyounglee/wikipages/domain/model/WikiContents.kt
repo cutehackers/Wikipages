@@ -9,4 +9,8 @@ import kotlinx.parcelize.Parcelize
  *  pages
  */
 @Parcelize
-data class WikiContents(val summary: WikiSummary, val pages: List<WikiPage>) : Parcelable
+data class WikiContents(
+    val query: String,
+    val summary: WikiSummary,
+    val pages: List<WikiPage>
+) : Parcelable

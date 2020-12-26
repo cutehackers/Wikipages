@@ -2,17 +2,15 @@ package app.junhyounglee.wikipages.app.search
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.SearchView
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import app.junhyounglee.wikipages.R
 import app.junhyounglee.wikipages.common.LogAware
 import app.junhyounglee.wikipages.common.d
 import app.junhyounglee.wikipages.common.e
@@ -27,9 +25,11 @@ import app.junhyounglee.wikipages.extension.toast
  */
 class SearchFragment : Fragment(), LogAware {
 
-  private val viewModel: SearchViewModel by viewModels { getViewModelFactory() }
+  private val viewModel: SearchViewModel by activityViewModels { getViewModelFactory() }
 
   private lateinit var binding: FragmentSearchBinding
+
+  private var hasQueryTextFocus = false
 
   override fun onCreateView(
       inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +47,9 @@ class SearchFragment : Fragment(), LogAware {
   private fun setUpView() {
     // 검색 창
     binding.searchView.apply {
+      setOnQueryTextFocusChangeListener { _, hasFocus ->
+        hasQueryTextFocus = hasFocus
+      }
       setOnQueryTextListener(object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
           hideSoftInput(this@apply)
@@ -54,13 +57,16 @@ class SearchFragment : Fragment(), LogAware {
         }
 
         override fun onQueryTextChange(newText: String): Boolean {
-          viewModel.onSearchQueryChanged(newText)
+          // 검색 시작
+          if (hasQueryTextFocus) {
+            viewModel.search(newText)
+          }
           return true
         }
       })
-      requestFocus()
     }
 
+    // 검색 결과
     viewModel.searchContents.observe(viewLifecycleOwner) {
       when (it) {
         is Result.Success<WikiContents> -> {
