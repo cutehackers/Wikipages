@@ -13,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import app.junhyounglee.wikipages.R
+import app.junhyounglee.wikipages.app.MainActivity
 import app.junhyounglee.wikipages.app.search.SearchViewModel
 import app.junhyounglee.wikipages.common.LogAware
 import app.junhyounglee.wikipages.common.d
@@ -21,6 +22,7 @@ import app.junhyounglee.wikipages.databinding.FragmentSearchContentsBinding
 import app.junhyounglee.wikipages.databinding.WikiSummaryLayoutBinding
 import app.junhyounglee.wikipages.domain.Result
 import app.junhyounglee.wikipages.domain.model.WikiContents
+import app.junhyounglee.wikipages.domain.model.WikiPage
 import app.junhyounglee.wikipages.extension.getViewModelFactory
 import app.junhyounglee.wikipages.extension.toast
 
@@ -51,11 +53,17 @@ class SearchContentsFragment : Fragment(), LogAware {
   }
 
   private fun setUpView() {
+    updateToolbarTitle(args.contents.query)
     addSummaryView()
 
     binding.pages.adapter = SearchContentsAdapter(requireContext(), args.contents.pages).also {
       adapter = it
     }
+    binding.pages.setOnItemClickListener { parent, view, position, id ->
+
+      onWikiPageItemClick(adapter.getItem(position - 1) as WikiPage)
+    }
+
     binding.refresher.setOnRefreshListener {
       // 검색 시작
       viewModel.search(args.contents.query)
@@ -77,8 +85,29 @@ class SearchContentsFragment : Fragment(), LogAware {
       }
     }
 
-    viewModel.isLoading.observe(viewLifecycleOwner) {
-      binding.refresher.isRefreshing = it
+    // 새로운 화면에서 검색 결과
+    viewModel.newSearchContents.observe(viewLifecycleOwner) {
+      binding.refresher.isRefreshing = false
+
+      when (it) {
+        is Result.Success<WikiContents> -> {
+          navigateToSelfScreen(it.data)
+        }
+        is Result.Error -> {
+          toast("Error while searching from new screen ...")
+          e("SearchContents> failed to search contents!", it.exception)
+        }
+      }
+    }
+
+//    viewModel.isSearching.observe(viewLifecycleOwner) {
+//      binding.refresher.isRefreshing = it
+//    }
+  }
+
+  private fun updateToolbarTitle(title: String) {
+    if (activity is MainActivity) {
+      (activity as MainActivity).updateToolbarTitle(title)
     }
   }
 
@@ -101,6 +130,9 @@ class SearchContentsFragment : Fragment(), LogAware {
     Html.fromHtml(texts)
   }
 
+  /**
+   * 위키 검색어 웹페이지 화면으로 이동
+   */
   private fun navigateToWikiPage() {
     val query = args.contents.query
     if (query.isNotEmpty()) {
@@ -110,4 +142,22 @@ class SearchContentsFragment : Fragment(), LogAware {
     }
   }
 
+  /**
+   * 위키 검색어 페이지 아이템 클릭
+   */
+  private fun onWikiPageItemClick(page: WikiPage) {
+    if (!binding.refresher.isRefreshing) {
+      d("navigateToSelfScreen> searching: ${page.title}")
+      viewModel.searchFromNewScreen(page.title)
+      binding.refresher.isRefreshing = true
+    }
+  }
+
+  /**
+   * 새로운 화면에서 검색 결과를 보여준다
+   */
+  private fun navigateToSelfScreen(contents: WikiContents) {
+    val direction = SearchContentsFragmentDirections.actionSearchContentsFragmentSelf(contents)
+    findNavController().navigate(direction)
+  }
 }

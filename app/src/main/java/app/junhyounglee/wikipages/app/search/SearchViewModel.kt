@@ -3,8 +3,8 @@ package app.junhyounglee.wikipages.app.search
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import app.junhyounglee.wikipages.common.LogAware
 import app.junhyounglee.wikipages.common.SingleLiveData
 import app.junhyounglee.wikipages.domain.Result
 import app.junhyounglee.wikipages.domain.model.SearchParameter
@@ -13,7 +13,6 @@ import app.junhyounglee.wikipages.domain.usecase.SearchUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 /**
@@ -21,7 +20,7 @@ import kotlinx.coroutines.launch
  */
 class SearchViewModel(
     private val searchUseCase: SearchUseCase
-) : ViewModel() {
+) : ViewModel(), LogAware {
 
   private var searchQuery: String = ""
 
@@ -30,16 +29,16 @@ class SearchViewModel(
   private val _searchContents = SingleLiveData<Result<WikiContents>>()
   val searchContents: LiveData<Result<WikiContents>> = _searchContents
 
-  val isLoading: LiveData<Boolean> = _searchContents.map {
-    it == Result.Loading
-  }
+  private val _newSearchContents = SingleLiveData<Result<WikiContents>>()
+  val newSearchContents: LiveData<Result<WikiContents>> = _newSearchContents
 
   /**
    * 검색 쿼리 변경에 위키 검색
    */
-  fun search(query: String) {
+  fun search(query: String): Boolean {
     // 1자 이상의 검색어만 허용하도록 한다
     val newQuery = query.trim()
+
     //if (newQuery != searchQuery && newQuery.length > 1) {
     if (newQuery.length > 1) {
       searchQuery = newQuery
@@ -47,7 +46,10 @@ class SearchViewModel(
 
       // 검색
       doSearch(searchQuery)
+      return true
     }
+
+    return false
   }
 
   /**
@@ -67,12 +69,30 @@ class SearchViewModel(
       delay(500)
 
       searchUseCase(SearchParameter(searchQuery))
-          .onStart { Result.Loading }
           .collect { result: Result<WikiContents> ->
             if (result is Result.Error) {
               Log.e("Search>", "error while searching with: $searchQuery", result.exception)
             } else if (result is Result.Success) {
               _searchContents.value = result
+              Log.d("Search>", "search: $result")
+            }
+          }
+    }
+  }
+
+  /**
+   * 위키 페이지에서 검색을 하고 새로운 페이지에서 내용을 보여주기 위한 이벤트를 발생시킨다
+   */
+  fun searchFromNewScreen(query: String) {
+    check(query.isNotEmpty()) { "query string must be valid one!" }
+
+    viewModelScope.launch {
+      searchUseCase(SearchParameter(query))
+          .collect { result: Result<WikiContents> ->
+            if (result is Result.Error) {
+              Log.e("Search>", "error while searching with: $query", result.exception)
+            } else if (result is Result.Success) {
+              _newSearchContents.value = result
               Log.d("Search>", "search: $result")
             }
           }

@@ -53,14 +53,18 @@ class SearchFragment : Fragment(), LogAware {
       setOnQueryTextListener(object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
           hideSoftInput(this@apply)
+
+          if (viewModel.search(query)) {
+            setLoadingIndicator(true)
+          }
           return true
         }
 
         override fun onQueryTextChange(newText: String): Boolean {
           // 검색 시작
-          if (hasQueryTextFocus) {
-            viewModel.search(newText)
-          }
+//          if (hasQueryTextFocus) {
+//            viewModel.search(newText)
+//          }
           return true
         }
       })
@@ -68,6 +72,8 @@ class SearchFragment : Fragment(), LogAware {
 
     // 검색 결과
     viewModel.searchContents.observe(viewLifecycleOwner) {
+      setLoadingIndicator(false)
+
       when (it) {
         is Result.Success<WikiContents> -> {
           navigateToSearchContents(it.data)
@@ -77,10 +83,6 @@ class SearchFragment : Fragment(), LogAware {
           e("Search> failed to search contents!", it.exception)
         }
       }
-    }
-
-    viewModel.isLoading.observe(viewLifecycleOwner) {
-      setLoadingIndicator(it)
     }
   }
 
