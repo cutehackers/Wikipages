@@ -28,15 +28,15 @@ import app.junhyounglee.wikipages.R
  * 라이브러리 형태로 제공하여 사용할 수 있도록 구현한다.
  *
  * 요구 사항
- *  • HttpURLConnection, HttpsURLConnection 기반으로 구현한다.
- *  • http 방식이든 https 방식이든, 모두 호출될 수 있도록 작성한다.
+ *  • HttpURLConnection, HttpsURLConnection 기반으로 구현한다. (O)
+ *  • http 방식이든 https 방식이든, 모두 호출될 수 있도록 작성한다. (O)
  *  • 요청 메서드 타입은 GET, POST, PUT, DELETE를 지원하도록 한다.
- *  • Request Header 값을 설정할 수 있어야 한다.
+ *  • Request Header 값을 설정할 수 있어야 한다. (O)
  *  • Response Data를 어떤 형식의 타입으로도 요청할 수 있어야 한다.
  *  • Request Body 전달 시 어떤 형식으로든 서버에 전달, 요청할 수 있어야 한다.
- *  • API 접속 timeout 시간을 설정할 수 있도록 작성한다.
+ *  • API 접속 timeout 시간을 설정할 수 있도록 작성한다. (O)
  *  • jar로 패키징될 수 있도록 gradle 빌드 스크립트도 작성한다. (O)
- *  • 위의 요구 사항에 대해서 테스트 케이스를 작성한다.
+ *  • 위의 요구 사항에 대해서 테스트 케이스를 작성한다. (~)
  *
  * [2 단계]
  * 1 단계에서 작성한 공통 통신 모듈을 사용하여, 아래 주어진 API를 사용하여 아래 요구 사항을 구현한다.
@@ -45,10 +45,10 @@ import app.junhyounglee.wikipages.R
  *  - 연관 검색 API: https://en.wikipedia.org/api/rest_v1/page/related/{검색어} (O)
  *
  * 요구 사항
- *  • SwipeRefreshLayout을 사용하여 ListView를 새로 고침하는 pull to refresh ListView 커스텀 뷰를 구현한다.
- *  • 검색어를 입력 후 검색을 시도하면 “검색 결과 Activity”를 구성한다.
- *  • “요약 정보 API” 를 이용하여 가져온 데이터를 이용하여 ListView의 header view 를 구성한다.
- *  • “연관 검색 API” 를 이용하여 가져온 데이터를 이용하여 ListView의 각 항목을 구성한다.
+ *  • SwipeRefreshLayout을 사용하여 ListView를 새로 고침하는 pull to refresh ListView 커스텀 뷰를 구현한다. (O)
+ *  • 검색어를 입력 후 검색을 시도하면 “검색 결과 Activity”를 구성한다. (O)
+ *  • “요약 정보 API” 를 이용하여 가져온 데이터를 이용하여 ListView의 header view 를 구성한다. (O)
+ *  • “연관 검색 API” 를 이용하여 가져온 데이터를 이용하여 ListView의 각 항목을 구성한다. (O)
  *  • ListView의 header view를 클릭하면 “검색 상세 페이지” URL을 이용하여 WebView를 내장한 Activity를 새롭게 띄워 해당 웹 페이지를 표시한다.
  *  • ListView의 각 항목을 클릭하면 해당 검색어를 이용한 새로운 “검색 결과 Activity”를 띄운다.
  */
