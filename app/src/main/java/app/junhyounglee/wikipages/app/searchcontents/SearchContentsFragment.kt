@@ -89,6 +89,9 @@ class SearchContentsFragment : Fragment(), LogAware {
       contents.text = fromHtml(summary.texts)
 
       binding.pages.addHeaderView(root)
+
+      // events
+      root.setOnClickListener { navigateToWikiPage() }
     }
   }
 
@@ -96,6 +99,15 @@ class SearchContentsFragment : Fragment(), LogAware {
     Html.fromHtml(texts, Html.FROM_HTML_MODE_LEGACY)
   } else {
     Html.fromHtml(texts)
+  }
+
+  private fun navigateToWikiPage() {
+    val query = args.contents.query
+    if (query.isNotEmpty()) {
+      val url = "${getString(R.string.wikipedia_base_url)}/rest_v1/page/html/$query"
+      val direction = SearchContentsFragmentDirections.actionSearchContentsFragmentToWikiPageFragment(url)
+      findNavController().navigate(direction)
+    }
   }
 
 }

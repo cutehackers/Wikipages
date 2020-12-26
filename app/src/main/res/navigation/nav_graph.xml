@@ -29,6 +29,19 @@
       app:popUpTo="@id/SearchFragment"
       app:popUpToInclusive="true"
       />
-
+    <action
+      android:id="@+id/action_SearchContentsFragment_to_WikiPageFragment"
+      app:destination="@id/WikiPageFragment" />
   </fragment>
+
+  <fragment
+    android:id="@+id/WikiPageFragment"
+    android:name="app.junhyounglee.wikipages.app.wikipage.WikiPageFragment"
+    android:label="@string/wiki_page_fragment_label"
+    tools:layout="@layout/fragment_wiki_page">
+    <argument
+      android:name="url"
+      app:argType="string" />
+  </fragment>
+
 </navigation>

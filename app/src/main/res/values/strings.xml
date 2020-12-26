@@ -7,6 +7,7 @@
   <!-- navigation -->
   <string name="search_fragment_label">Search</string>
   <string name="search_contents_fragment_label">Contents</string>
+  <string name="wiki_page_fragment_label">Wiki</string>
 
   <string name="next">Next</string>
   <string name="previous">Previous</string>
