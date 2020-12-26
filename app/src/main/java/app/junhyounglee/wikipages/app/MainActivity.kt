@@ -1,4 +1,4 @@
-package app.junhyounglee.wikipages
+package app.junhyounglee.wikipages.app
 
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -6,6 +6,12 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupWithNavController
+import app.junhyounglee.wikipages.R
 
 /**
  * [공통 요구사항]
@@ -35,13 +41,12 @@ import android.view.MenuItem
  * [2 단계]
  * 1 단계에서 작성한 공통 통신 모듈을 사용하여, 아래 주어진 API를 사용하여 아래 요구 사항을 구현한다.
  *  - 검색 상세 페이지: https://en.wikipedia.org/api/rest_v1/page/html/{검색어}
- *  - 요약 정보 API: https://en.wikipedia.org/api/rest_v1/page/summary/{검색어}
- *  - 연관 검색 API: https://en.wikipedia.org/api/rest_v1/page/related/{검색어}
+ *  - 요약 정보 API: https://en.wikipedia.org/api/rest_v1/page/summary/{검색어} (O)
+ *  - 연관 검색 API: https://en.wikipedia.org/api/rest_v1/page/related/{검색어} (O)
  *
  * 요구 사항
  *  • SwipeRefreshLayout을 사용하여 ListView를 새로 고침하는 pull to refresh ListView 커스텀 뷰를 구현한다.
  *  • 검색어를 입력 후 검색을 시도하면 “검색 결과 Activity”를 구성한다.
- *    (예시 화면은 검색어로 “google”을 입력 후 검색을 실행한 화면이다.)
  *  • “요약 정보 API” 를 이용하여 가져온 데이터를 이용하여 ListView의 header view 를 구성한다.
  *  • “연관 검색 API” 를 이용하여 가져온 데이터를 이용하여 ListView의 각 항목을 구성한다.
  *  • ListView의 header view를 클릭하면 “검색 상세 페이지” URL을 이용하여 WebView를 내장한 Activity를 새롭게 띄워 해당 웹 페이지를 표시한다.
@@ -49,30 +54,18 @@ import android.view.MenuItem
  */
 class MainActivity : AppCompatActivity() {
 
+  private lateinit var appBarConfiguration: AppBarConfiguration
+
+  private val navController by lazy {
+    (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    setSupportActionBar(findViewById(R.id.toolbar))
 
-    findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-      Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-          .setAction("Action", null).show()
-    }
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    menuInflater.inflate(R.menu.menu_main, menu)
-    return true
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    // Handle action bar item clicks here. The action bar will
-    // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
-    return when (item.itemId) {
-      R.id.action_settings -> true
-      else -> super.onOptionsItemSelected(item)
-    }
+    appBarConfiguration = AppBarConfiguration(navController.graph)
+    findViewById<Toolbar>(R.id.toolbar)
+        .setupWithNavController(navController, appBarConfiguration)
   }
 }

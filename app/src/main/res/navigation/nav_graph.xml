@@ -3,26 +3,32 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/nav_graph"
-  app:startDestination="@id/FirstFragment">
+  app:startDestination="@id/SearchFragment">
 
   <fragment
-    android:id="@+id/FirstFragment"
-    android:name="app.junhyounglee.wikipages.FirstFragment"
-    android:label="@string/first_fragment_label"
-    tools:layout="@layout/fragment_first">
-
+    android:id="@+id/SearchFragment"
+    android:name="app.junhyounglee.wikipages.app.search.SearchFragment"
+    android:label="@string/search_fragment_label"
+    tools:layout="@layout/fragment_search">
     <action
-      android:id="@+id/action_FirstFragment_to_SecondFragment"
-      app:destination="@id/SecondFragment" />
+      android:id="@+id/action_SearchFragment_to_SearchContentsFragment"
+      app:destination="@id/SearchContentsFragment" />
   </fragment>
-  <fragment
-    android:id="@+id/SecondFragment"
-    android:name="app.junhyounglee.wikipages.SecondFragment"
-    android:label="@string/second_fragment_label"
-    tools:layout="@layout/fragment_second">
 
+  <fragment
+    android:id="@+id/SearchContentsFragment"
+    android:name="app.junhyounglee.wikipages.app.searchcontents.SearchContentsFragment"
+    android:label="@string/search_contents_fragment_label"
+    tools:layout="@layout/fragment_search_contents">
+    <argument
+      android:name="contents"
+      app:argType="app.junhyounglee.wikipages.domain.model.WikiContents"
+      />
     <action
-      android:id="@+id/action_SecondFragment_to_FirstFragment"
-      app:destination="@id/FirstFragment" />
+      android:id="@+id/action_SearchContentsFragment_pop_including_SearchFragment"
+      app:popUpTo="@id/SearchFragment"
+      app:popUpToInclusive="true"
+      />
+
   </fragment>
 </navigation>

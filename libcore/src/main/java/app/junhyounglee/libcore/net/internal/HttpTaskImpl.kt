@@ -34,13 +34,19 @@ class HttpTaskImpl internal constructor(
                 HttpMethod.GET -> {
                     connection.doOutput = false
 
-                    HttpResponse.builder()
+                    val builder = HttpResponse.builder()
                         .request(request)
                         .headers(connection.headerFields)
                         .code(connection.responseCode)
                         .message(connection.responseMessage)
-                        .source(connection.buffer())
-                        .build()
+
+                    if (connection.responseCode < 400) {
+                        builder.source(connection.buffer())
+                    } else {
+                        builder.source(connection.error())
+                    }
+
+                    builder.build()
                 }
 
                 else -> throw UnsupportedOperationException("HTTP method, ${request.method} is not a supported operation.")
@@ -67,4 +73,7 @@ class HttpTaskImpl internal constructor(
 
     private fun HttpURLConnection.buffer(): BufferedReader =
         BufferedReader(InputStreamReader(inputStream, Charset.forName("UTF-8")))
+
+    private fun HttpURLConnection.error(): BufferedReader =
+        BufferedReader(InputStreamReader(errorStream, Charset.forName("UTF-8")))
 }

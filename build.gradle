@@ -3,6 +3,7 @@ buildscript {
     ext.versions = [
         'kotlin': "1.4.21",
         'junit': '4.13.1',
+        'nav': '2.3.2'
     ]
     ext.deps = [
         'android': 'com.google.android:android:4.1.1.4',
@@ -17,7 +18,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:4.1.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
-
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:${versions.nav}"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
